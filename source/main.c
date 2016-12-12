@@ -5,7 +5,6 @@
 #include "core/clipboard.h"
 #include "core/screen.h"
 #include "core/util.h"
-#include "svchax/svchax.h"
 #include "ui/error.h"
 #include "ui/mainmenu.h"
 #include "ui/ui.h"
@@ -85,18 +84,10 @@ void init() {
         return;
     }
 
-    if(R_FAILED(init_services())) {
-        svchax_init(true);
-        if(!__ctr_svchax || !__ctr_svchax_srv) {
-            util_panic("Failed to acquire kernel access.");
-            return;
-        }
-
-        Result initRes = init_services();
-        if(R_FAILED(initRes)) {
-            util_panic("Failed to initialize services: %08lX", initRes);
-            return;
-        }
+    Result initRes = init_services();
+    if(R_FAILED(initRes)) {
+        util_panic("Failed to initialize services: %08lX", initRes);
+        return;
     }
 
     APT_GetAppCpuTimeLimit(&old_time_limit);
